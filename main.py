@@ -21,13 +21,6 @@ def login_required(f):
 def load_user():
     g.user = session.get('user')
 
-@app.route("/")
-@app.route("/home")
-@login_required
-def home():
-    # res = await execute_workflows.start_dashboard_workflow("test")
-    return render_template('dashboard.html', name=g.user)
-
 @app.route("/registration", methods=["GET", "POST"])
 def registration():
     if request.method == "POST":
@@ -53,6 +46,31 @@ def login():
 def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
+
+@app.route("/")
+@app.route("/home")
+@login_required
+def home():
+    # res = await execute_workflows.start_dashboard_workflow("test")
+    return render_template('dashboard.html', name=g.user)
+
+@app.route("/analysis")
+@login_required
+def analysis():
+    # res = await execute_workflows.start_dashboard_workflow("test")
+    return render_template('dashboard.html', name=g.user)
+
+@app.route('/test')
+def index():
+    return render_template('test.html')
+
+@app.route('/billing')
+def billing():
+    return render_template('billing.html')
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True, threaded=True, use_reloader=True)

@@ -2,6 +2,12 @@
 <head>
 <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
@@ -182,7 +188,7 @@
                     </div>
                 </div>
                 <div class="relative flex-grow">
-                    <input type="search" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search Roti, Handi, Pulao..." required />
+                    <input type="search" id="search-suggest" name="search-suggest" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search Roti, Handi, Pulao..." required />
                 </div>
                 <div class="flex-shrink-0 flex items-center">
                     <label for="small-input" class="inline-flex mb-2 text-sm font-medium text-gray-900 dark:text-white mr-2">Table No</label>
@@ -569,6 +575,26 @@
   </div>
 </div>
 </body>
+<script> 
+    $(document).ready(function() {
+        $('#search-suggest').autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: `http://localhost:8000/search?q=${encodeURIComponent(request.term)}`,
+                    dataType: 'json',
+                    success: function(data) {
+                        response(data);
+                    },
+                    error: function() {
+                        response([]);
+                    }
+                });
+            },
+            minLength: 1, // Minimum length of query to start searching
+            delay: 100 // Reduced delay in milliseconds before the search is performed
+        });
+    });
+</script>
    </html>
  
   

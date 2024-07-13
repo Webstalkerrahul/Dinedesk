@@ -1,95 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Form with Dropdown</title>
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
-</head>
-<body class="flex justify-center items-center min-h-screen bg-gray-100">
 
-<div class="pt-16 flex space-x-6 justify-center items-start w-full max-w-7xl mx-auto">
-    <form class="flex-shrink-0">
-        <div class="flex">
-            <label for="location-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-            <button id="dropdown-button-2" data-dropdown-toggle="dropdown-search-city" class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">
-                Start
-                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                </svg>
-            </button>
-            <div id="dropdown-search-city" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button-2">
-                    <li>
-                        <button type="button" class="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
-                            <div class="inline-flex items-center">
-                                End
-                            </div>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-            <div class="relative w-full">
-                <input type="search" id="location-search" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search for city or address" required />
-                <button type="submit" class="absolute top-0 end-0 h-full p-2.5 text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
-                    <span class="sr-only">Search</span>
-                </button>
-            </div>
-        </div>
-    </form>
+    <title></title>
 
-    <form class="flex-grow">
-        <div class="flex w-full space-x-4">
-            <div class="relative flex-grow">
-                <button id="dropdown-button" data-dropdown-toggle="dropdown" class="w-full z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">
-                    All categories
-                    <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                    </svg>
-                </button>
-                <div id="dropdown" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
-                        <li>
-                            <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Veg</button>
-                        </li>
-                        <li>
-                            <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Non-veg</button>
-                        </li>
-                        <li>
-                            <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Starter</button>
-                        </li>
-                        <li>
-                            <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Desert</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="relative flex-grow">
-                <input type="search" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search Roti, Handi, Pulao..." required />
-            </div>
-            <div class="flex-shrink-0 flex items-center">
-                <label for="small-input" class="inline-flex mb-2 text-sm font-medium text-gray-900 dark:text-white mr-2">Table No</label>
-                <input type="text" id="small-input" class="block w-20 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            </div>
-            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Add</button>
-        </div>
-    </form>
-</div>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<body>
+
+<div class="jumbotron ui-widget">
+    <input id="source" />
+    <div id="result"></div>
+
+</div>s
+
 
 <script>
-    document.getElementById('dropdown-button-2').addEventListener('click', function () {
-        var dropdown = document.getElementById('dropdown-search-city');
-        dropdown.classList.toggle('hidden');
-    });
-    document.getElementById('dropdown-button').addEventListener('click', function () {
-        var dropdown = document.getElementById('dropdown');
-        dropdown.classList.toggle('hidden');
-    });
-</script>
 
+
+    const $source = document.querySelector('#source');
+    const $result = document.querySelector('#result');
+
+    const typeHandler = function(e) {
+        $result.innerHTML = e.target.value;
+        console.log(e.target.value);
+
+        $.ajax({
+            url: "/pipe",
+            type : 'POST',
+            cache: false,
+            data:{'data': e.target.value},
+            success: function(html)
+            {
+
+                console.log(html);
+                var count = 0;
+                var myList = [];
+
+
+               for(var x in html)
+               {
+                    count =count + 1;
+                   //console.log(html.aggregations.rating.buckets[count].key);
+                   myList.push(html.aggregations.rating.buckets[count].key)
+               }
+                console.log(myList);
+
+                $( "#source" ).autocomplete({
+                    source: myList
+                });
+
+                count = 0;
+            }
+        });
+
+
+    }
+
+
+    $source.addEventListener('input', typeHandler) // register for oninput
+    $source.addEventListener('propertychange', typeHandler) // for IE8
+    // $source.addEventListener('change', typeHandler) // fallback for Firefox for <select><option>, for <input> oninput is enough
+
+
+
+
+</script>
 </body>
 </html>

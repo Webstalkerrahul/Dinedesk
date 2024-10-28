@@ -1,47 +1,35 @@
-from tools import get_config, es_queries, csv_help
-from elasticsearch import Elasticsearch # type: ignore
-import psycopg2 # type: ignore
+from tools import csv_help
+from tools.elasticsearch import es_queries
+from utils import connect
+from flask import request
+import time
+es_conn = connect.es_connect()
 
-con = get_config.get_es_config()
-
-def es_conn():
-    es_user=con['es_user']
-    es_pass=con['es_pass']
-    es_host_1=con['es_host_1']
-    es_ca_certs=con['es_ca_certs']
-    client = Elasticsearch(
-        hosts=es_host_1,
-        ca_certs=es_ca_certs,
-        basic_auth=(es_user, es_pass)
-    )
-    # print(client.info())
-    return client
-
-def create_index(conn,name):
+def create_index(name):
     try: 
-        res = conn.indices.create(index=f"{name}")
+        res = es_conn.indices.create(index=f"{name}")
         return 201 #this is for created
     except Exception as e: 
         return 409 #this is for conflic index already exists
 
-def delete_index(conn,name):
+def delete_index(name):
     try: 
-        res = conn.indices.delete(index=f"{name}",ignore=[400, 404])
+        res = es_conn.indices.delete(index=f"{name}",ignore=[400, 404])
         return 201 #this is for created
     except Exception as e: 
         return 409 #this is for conflic index already exists
     
-def find_item_by_name(conn,name,table,qty):
+def find_item_by_name(name,table,qty):
     try:
         query = es_queries.find_by_item_name_query(name)
-        item_result = conn.search(index="test", body=query)
+        item_result = es_conn.search(index="test", body=query)
         item_details = item_result['hits']['hits'][0]['_source']
         item_details.update({'table_no':int(table),'qty':int(qty),'item_total':int(item_details['item_price'])*int(qty)})
         return item_details
     except Exception as e:
         return False
 
-def insert_into_index_df(conn):
+def insert_into_index_df():
     df = csv_help.read_csv()
     try:
         for i, row in df.iterrows():
@@ -51,19 +39,18 @@ def insert_into_index_df(conn):
                 "item_name":row['NAME'],
                 "item_price":row['PRICE']
             }
-            conn.index(index="test", id=i, document=doc)
-        print("Data inserted successfully in Elastic search")
+            es_conn.index(index="test", id=i, document=doc)
 
     except Exception as e:
         print(f"Error while inserting documents due to :\n{e}")
 
-def insert_into_index_orders(conn,item_details):
+def insert_into_index_orders(item_details):
     try:
         tno = item_details["table_no"]
         item_name = item_details["item_name"]
         item_qty = item_details["qty"]
         item_price = item_details["item_price"]
-        result = get_table_orders(conn, tno)
+        result = get_table_orders(tno)
         
         if result:
             for res in result:
@@ -72,32 +59,31 @@ def insert_into_index_orders(conn,item_details):
                     price = qty * item_price
                     doc_id = res['_id']
                     query = es_queries.update_item_qty(qty,price)
-                    conn.update(index="orders",id = doc_id,body=query)
-                    print("Data updated ")
+                    es_conn.update(index="orders",id = doc_id,body=query)
                     return True
                 
-        conn.index(index="orders", document=item_details)
-        print("Data inserted")
+        es_conn.index(index="orders", document=item_details)
+        es_conn.indices.refresh(index="orders")
        
         return True
 
     except Exception as e:
         print(f"Error while inserting documents due to :\n{e}")
 
-def get_table_orders(conn,tableno):
+def get_table_orders(tableno):
     try:
         query=es_queries.get_table_orders(tableno)
-        result = conn.search(index="orders", body=query)
+        result = es_conn.search(index="orders", body=query)
         table_orders = result['hits']['hits']
         return table_orders
 
     except Exception as e:
         print(f"Error while fetching orders due to :\n{e}")
 
-def get_table_total(conn,tableno):
+def get_table_total(tableno):
     try:
         query=es_queries.get_table_total_query(tableno)
-        result = conn.search(index="orders", body=query)
+        result = es_conn.search(index="orders", body=query)
         total = result['aggregations']['table_total']['value']
         return total
 
@@ -105,10 +91,11 @@ def get_table_total(conn,tableno):
         print(f"Error while fetching orders due to :\n{e}")
 
 
-def get_all_orders(conn):
+def get_all_orders():
     try:
+        es_conn.indices.refresh(index="orders")
         query=es_queries.get_all_orders_query()
-        all_orders = conn.search(index="orders", body=query)
+        all_orders = es_conn.search(index="orders", body=query)
         orders_with_id=[]
         all_orders = [hit for hit in all_orders['hits']['hits']]
         for order in all_orders:
@@ -128,51 +115,26 @@ def get_all_orders(conn):
     except Exception as e:
         print(f"Error while fetching orders due to :\n{e}")
 
-def update_qty(conn,qty):
+def update_qty(qty):
     try:
         query = es_queries.update_item_qty(qty)
-        response = conn.update_by_query(index="orders", body=query)
-        print(response)
+        response = es_conn.update_by_query(index="orders", body=query)
     except Exception as e:
         print(f"Error while updataing qty due to :\n{e}")
 
-def print_bill(tabel_orders,new,table_no):
-    items = []
-    item_qty = []
-    items_price = []
-    items_price_total = []
+def auto_suggest(query):
+    
+    payload = es_queries.auto_suggest_query(query)
+    resp = es_conn.search(index="test", body=payload)
+    result = [result['_source']['item_name'] for result in resp['hits']['hits']]
+    return result
 
-    for order in tabel_orders:   
-        items.append(order['_source']['item_name'])
-        items_price.append(order['_source']['item_price'])
-        item_qty.append(order['_source']['qty'])
-        items_price_total.append(order['_source']['item_total'])
+def delete_item(item_id):
+    try:
+        print(item_id)
+        res= es_conn.delete(index="orders", id=item_id)
+        es_conn.indices.refresh(index="orders")
 
-    print("total:", new)
-
-    connection = psycopg2.connect(database="Dinedesk", user="postgres", password="admin", host="localhost", port="5432")
-    cursor = connection.cursor()
-
-    insert_query = """
-    INSERT INTO bills (table_no, products, qty, price, total_price, total_bill)
-    VALUES (%s, %s, %s, %s, %s, %s)
-    """
-
-    cursor.execute(insert_query, (table_no, items, item_qty, items_price, items_price_total, new))
-
-    connection.commit()
-    cursor.close()
-    connection.close()
-
-    # Fetch and print the records from the bills table
-    # cursor.execute("SELECT * FROM bills;")
-    # record = cursor.fetchall()
-
-    # for row in record:
-    #     print(row)
-    es = es_conn()
-    for order in tabel_orders:   
-        item_id=order['_id']
-        es.delete(index="orders", id=item_id)
-    print("item deleted")
-
+        print(res)
+    except:
+        print("Cannot r")

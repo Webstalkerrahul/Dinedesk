@@ -52,7 +52,7 @@ def get_bills():
         )
         records = cursor.fetchall() 
 
-        cursor.execute("SELECT SUM(online) AS total_online, SUM(cash) AS total_cash, SUM(total_bill) AS total_sum FROM bills;")
+        cursor.execute("SELECT SUM(online) AS total_online, SUM(cash) AS total_cash, SUM(total_bill) AS total_sum FROM bills WHERE time >= %s AND time < %s", (start_time, end_time))
         totals = cursor.fetchone() 
         totals = [float(value) if value is not None else 0 for value in totals]
         return records, totals 
@@ -76,6 +76,53 @@ def add_payment(bill_no, online, cash):
 
         query = "UPDATE bills SET online = %s, cash = %s WHERE id = %s;"
         cursor.execute(query, (online, cash, bill_no))
+        connection.commit()
+        return 200
+    except Exception as e:
+        print(f"Error due to {e}")
+        return 404
+
+def get_expenses():
+    try:
+        
+        connection.rollback()
+        start_time = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = start_time + timedelta(days=1, hours=6)
+
+        cursor.execute(
+            "SELECT * FROM expenses WHERE time >= %s AND time < %s ORDER BY time DESC;",
+            (start_time, end_time)
+        )
+        records = cursor.fetchall() 
+
+        cursor.execute("SELECT SUM(online) AS total_online, SUM(cash) AS total_cash, SUM(rate) AS total_sum FROM expenses WHERE time >= %s AND time < %s", (start_time, end_time))
+        totals = cursor.fetchone()
+
+        cursor.execute("SELECT SUM(online) AS total_online, SUM(cash) AS total_cash, SUM(total_bill) AS total_sum FROM bills WHERE time >= %s AND time < %s", (start_time, end_time))
+        totals_bill = cursor.fetchone()
+
+        totals = [float(value) if value is not None else 0 for value in totals]
+        totals_bill = [float(value) if value is not None else 0 for value in totals_bill]
+        return records, totals, totals_bill
+    
+    except psycopg2.Error as e:
+        connection.rollback()
+        print(f"Database error occurred: {e}")
+        raise
+
+    finally:
+        connection.commit()
+
+def add_expenses(item, rate, cash, online):
+    try:
+        if cash == '' or cash == None:
+            cash = 0 
+        
+        if online == '' or online == None:
+            online = 0
+
+        query = "INSERT INTO expenses (item, rate, cash, online) VALUES (%s, %s, %s, %s);"
+        cursor.execute(query, (item, rate, cash, online))
         connection.commit()
         return 200
     except Exception as e:

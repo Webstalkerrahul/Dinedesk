@@ -5,6 +5,7 @@ from flask_cors import CORS # type: ignore
 
 from api.billing.billing_api import billing
 from api.payments.payment_api import payments
+from api.expenses.expenses_api import expenses
 # from api import test.test
 
 app = Flask(__name__)
@@ -17,6 +18,7 @@ users = {
 
 app.register_blueprint(billing,url_prefix='/billing')
 app.register_blueprint(payments,url_prefix='/payments')
+app.register_blueprint(expenses,url_prefix='/expenses')
 
 def login_required(f):
     @wraps(f)

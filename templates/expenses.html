@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block Content %}
+<div class="p-4 transition-all duration-300 ease-in-out flex justify-center items-center w-full" id="main-content">
+    <div class="max-w-screen-xl mx-auto p-4 mt-14 w-full flex flex-col items-center">
+        <div class="w-full flex flex-col items-center">
+            <section class="bg-white dark:bg-gray-900 w-full">
+                <div class="max-w-screen-xl px-4 py-8 mx-auto text-center lg:py-16 lg:px-6">
+                    <dl class="flex justify-center gap-16 space-x-8 max-w-screen-md mx-auto text-gray-900 dark:text-white">
+                        <div class="flex flex-col items-center">
+                            <dt class="mb-2 text-3xl md:text-4xl font-extrabold">{{total}}</dt>
+                            <dd class="font-light text-gray-500 dark:text-gray-400">Total Expenses</dd>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <dt class="mb-2 text-3xl md:text-4xl font-extrabold">{{online}}</dt>
+                            <dd class="font-light text-gray-500 dark:text-gray-400">Online</dd>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <dt class="mb-2 text-3xl md:text-4xl font-extrabold">{{cash}}</dt>
+                            <dd class="font-light text-gray-500 dark:text-gray-400">Cash</dd>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <dt class="mb-2 text-3xl md:text-4xl font-extrabold">{{totals_bill}}</dt>
+                            <dd class="font-light text-gray-500 dark:text-gray-400">Total Sale</dd>
+                        </div>
+                    </dl>
+                </div>
+            </section>
+            
+            <form action="{{ url_for('expenses.insert_expenses') }}" method="POST" class="flex flex-col items-center justify-center w-full mb-6">
+                <div class="inline-flex flex-wrap gap-4 items-center justify-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <label for="item_name" class="inline-flex mb-2 text-sm font-medium text-gray-900 dark:text-white mr-2">Item</label>
+                        <input type="text" id="item_name" name="item_name" class="block w-80 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
+                    
+                    <div class="flex-shrink-0 flex items-center">
+                        <label for="rate" class="inline-flex mb-2 text-sm font-medium text-gray-900 dark:text-white mr-2">Rate</label>
+                        <input type="number" id="rate" name="rate" class="block w-20 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
+                    
+                    <div class="flex-shrink-0 flex items-center">
+                        <label for="cash" class="inline-flex mb-2 text-sm font-medium text-gray-900 dark:text-white mr-2">Cash</label>
+                        <input type="number" id="cash" name="cash" class="block w-20 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
+
+                    <div class="flex-shrink-0 flex items-center">
+                        <label for="online" class="inline-flex mb-2 text-sm font-medium text-gray-900 dark:text-white mr-2">Online</label>
+                        <input type="number" id="online" name="online" class="block w-20 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
+                    
+                    <div class="flex-shrink-0 flex justify-center">
+                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-full flex justify-center">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Expense No</th>
+                        <th scope="col" class="px-6 py-3">Item</th>
+                        <th scope="col" class="px-6 py-3">Rate</th>
+                        <th scope="col" class="px-6 py-3">Cash</th>
+                        <th scope="col" class="px-6 py-3">Online</th>
+                        <th scope="col" class="px-6 py-3">Date</th>
+                        <th scope="col" class="px-6 py-3">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in data %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td class="px-6 py-4">{{t[0]}}</td>
+                        <td class="px-6 py-4">{{t[1]}}</td>
+                        <td class="px-6 py-4">{{t[2]}}</td>
+                        <td class="px-6 py-4">{{t[4]}}</td>
+                        <td class="px-6 py-4">{{t[5]}}</td>
+                        <td class="px-6 py-4">{{ t[3].strftime('%Y-%m-%d') }}</td>
+                        <td class="px-6 py-4">{{ t[3].strftime('%H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('logo-sidebar');
+        const mainContent = document.getElementById('main-content');
+        
+        function updateMainContentMargin() {
+            if (!sidebar.classList.contains('closed')) {
+                mainContent.classList.add('sm:ml-64');
+            } else {
+                mainContent.classList.remove('sm:ml-64');
+            }
+        }
+
+        updateMainContentMargin();
+
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'class') {
+                    updateMainContentMargin();
+                }
+            });
+        });
+
+        observer.observe(sidebar, {
+            attributes: true
+        });
+    });
+</script>
+{% endblock %}
